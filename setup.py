@@ -9,11 +9,11 @@ setup(
     packages=['bprofanity'],
     url='https://github.com/thatsayon/bprofanity',
     classifiers=(
-        'Development Status :: 1 - First Release',
+        'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
-        'License :: MIT License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS',
-        'Operating System :: Linux',
+        'Operating System :: POSIX :: Linux'
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python :: 3',),
     data_files=[('data', ['bprofanity/data/wordlist.txt']), ],
