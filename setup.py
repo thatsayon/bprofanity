@@ -13,7 +13,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS',
-        'Operating System :: POSIX :: Linux'
+        'Operating System :: POSIX :: Linux',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python :: 3',),
     data_files=[('data', ['bprofanity/data/wordlist.txt']), ],
