@@ -48,7 +48,7 @@ class ProfanityChecker:
         decrypted_data = fernet.decrypt(encrypted_data).decode()
         words = decrypted_data.splitlines()
         for word in words:
-            self.trie.insert(word.lower())  # Ensure lowercase consistency
+            self.trie.insert(word.lower())
 
     def compile_censor_pattern(self):
         self.censor_pattern = re.compile(r'\b(?:\w+)\b', re.IGNORECASE)
@@ -58,7 +58,7 @@ class ProfanityChecker:
 
     def contains_profanity(self, input_text):
         words = self.censor_pattern.findall(
-            input_text.lower())  # Ensure lowercase consistency
+            input_text.lower())
         for word in words:
             if self.trie.search(word):
                 return True
@@ -67,14 +67,13 @@ class ProfanityChecker:
     def censor_count(self, input_text):
         count = 0
         words = self.censor_pattern.findall(
-            input_text.lower())  # Ensure lowercase consistency
+            input_text.lower())
         for word in words:
             if self.trie.search(word):
                 count += 1
         return count
 
     def get_words(self):
-        # Retrieves all words stored in the Trie
         word_list = []
 
         def traverse(node, prefix):
