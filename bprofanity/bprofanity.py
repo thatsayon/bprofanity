@@ -1,67 +1,87 @@
-import os
 import re
-
-words = set()
-_ROOT = os.path.abspath(os.path.dirname(__file__))
-censor_pattern = None
+import os
+from cryptography.fernet import Fernet
 
 
-def get_data(path):
-    return os.path.join(_ROOT, 'data', path)
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
 
 
-def get_words():
-    global words
-    if not words:
-        load_words()
-    return words
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+
+    def search(self, word):
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
 
 
-def compile_censor_pattern():
-    global censor_pattern
-    words = get_words()
-    censor_pattern = re.compile(
-        r'\b(?:' + '|'.join(re.escape(word) for word in words) + r')\b', re.IGNORECASE)
+class ProfanityChecker:
+    def __init__(self, root_dir):
+        self.trie = Trie()
+        self.compile_censor_pattern()
+        self.root_dir = root_dir
+        self.key = b'MVIXSs6cKkb5rZT7zl2hpD_qOBZ-ouwXKg6Zy_ZOrp0='
 
+    def get_data(self, path):
+        return os.path.join(self.root_dir, 'data', path)
 
-def censor(input_text):
-    global censor_pattern
-    if not censor_pattern:
-        compile_censor_pattern()
-    return censor_pattern.sub('🤬', input_text)
+    def load_words(self):
+        filename = self.get_data('wordlist.enc')
+        with open(filename, 'rb') as f:
+            encrypted_data = f.read()
+        fernet = Fernet(self.key)
+        decrypted_data = fernet.decrypt(encrypted_data).decode()
+        words = decrypted_data.splitlines()
+        for word in words:
+            self.trie.insert(word.lower())  # Ensure lowercase consistency
 
+    def compile_censor_pattern(self):
+        self.censor_pattern = re.compile(r'\b(?:\w+)\b', re.IGNORECASE)
 
-def load_words(wordlist=None):
-    global words
-    if not wordlist:
-        filename = get_data('wordlist.txt')
-        with open(filename) as f:
-            wordlist = {line.strip() for line in f if line.strip()}
-    words = wordlist
+    def censor(self, input_text):
+        return self.censor_pattern.sub(lambda x: '*' * len(x.group()), input_text)
 
+    def contains_profanity(self, input_text):
+        words = self.censor_pattern.findall(
+            input_text.lower())  # Ensure lowercase consistency
+        for word in words:
+            if self.trie.search(word):
+                return True
+        return False
 
-def contains_profanity(input_text):
-    global censor_pattern
-    if not censor_pattern:
-        compile_censor_pattern()
-    return bool(censor_pattern.search(input_text))
+    def censor_count(self, input_text):
+        count = 0
+        words = self.censor_pattern.findall(
+            input_text.lower())  # Ensure lowercase consistency
+        for word in words:
+            if self.trie.search(word):
+                count += 1
+        return count
 
+    def get_words(self):
+        # Retrieves all words stored in the Trie
+        word_list = []
 
-def censor_count(input_text):
-    global censor_pattern
-    if not censor_pattern:
-        compile_censor_pattern()
-    return len(censor_pattern.findall(input_text))
+        def traverse(node, prefix):
+            if node.is_end_of_word:
+                word_list.append(prefix)
+            for char, child_node in node.children.items():
+                traverse(child_node, prefix + char)
 
-
-def add_bad_word(word):
-    words = get_words()
-
-    if word not in words:
-        wordlist = os.path.join(_ROOT, 'data', 'wordlist.txt')
-        with open(wordlist, 'a') as f:
-            f.write(word + '\n')
-        words.add(word)
-        # Update the censor pattern
-        compile_censor_pattern()
-
+        traverse(self.trie.root, "")
+        return word_list
