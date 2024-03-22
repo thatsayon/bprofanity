@@ -1,15 +1,21 @@
 from setuptools import setup
 import bprofanity
 
+with open('README.md', 'r', encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
     name="bprofanity",
     version=bprofanity.__version__,
     author="Ashiqul Islam Ayon",
     author_email="ashiqulislamayon28@gmail.com",
+    description="A Python package for detecting and filtering profanity from bangla text",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=['bprofanity'],
     url='https://github.com/thatsayon/bprofanity',
     classifiers=(
-        'Development Status :: 1 - Planning',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS',

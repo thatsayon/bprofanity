@@ -54,7 +54,14 @@ class ProfanityChecker:
         self.censor_pattern = re.compile(r'\b(?:\w+)\b', re.IGNORECASE)
 
     def censor(self, input_text):
-        return self.censor_pattern.sub(lambda x: '*' * len(x.group()), input_text)
+        words = input_text.split()
+        censored_text = []
+        for word in words:
+            if self.trie.search(word.lower()):
+                censored_text.append('*' * len(word))
+            else:
+                censored_text.append(word)
+        return ' '.join(censored_text)
 
     def contains_profanity(self, input_text):
         words = self.censor_pattern.findall(
