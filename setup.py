@@ -18,7 +18,7 @@ setup(
         'Programming Language :: Python :: 3',),
     data_files=[('data', ['bprofanity/data/wordlist.txt']), ],
     package_data={
-        '': ['bprofanity/data/wordlist.txt'],
+        '': ['bprofanity/data/wordlist.enc'],
     },
     include_package_data=True,
 )
