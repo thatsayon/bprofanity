@@ -21,8 +21,7 @@ pip install bprofanity
 from bprofanity import ProfanityChecker
 import os
 
-profanity_checker = ProfanityChecker(
-    os.path.abspath(os.path.dirname(__file__)))
+profanity_checker = ProfanityChecker()
 profanity_checker.load_words()
 
 input_text = "Some text with a bad word like Bal"

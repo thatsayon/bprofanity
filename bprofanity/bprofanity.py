@@ -31,10 +31,10 @@ class Trie:
 
 
 class ProfanityChecker:
-    def __init__(self, root_dir):
+    def __init__(self):
         self.trie = Trie()
         self.compile_censor_pattern()
-        self.root_dir = root_dir
+        self.root_dir = os.path.abspath(os.path.dirname(__file__))
         self.key = b'MVIXSs6cKkb5rZT7zl2hpD_qOBZ-ouwXKg6Zy_ZOrp0='
 
     def get_data(self, path):

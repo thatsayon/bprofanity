@@ -22,7 +22,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python :: 3',),
-    data_files=[('data', ['bprofanity/data/wordlist.txt']), ],
+    data_files=[('data', ['bprofanity/data/wordlist.enc']), ],
     package_data={
         '': ['bprofanity/data/wordlist.enc'],
     },
