@@ -36,6 +36,7 @@ class ProfanityChecker:
         self.compile_censor_pattern()
         self.root_dir = os.path.abspath(os.path.dirname(__file__))
         self.key = b'MVIXSs6cKkb5rZT7zl2hpD_qOBZ-ouwXKg6Zy_ZOrp0='
+        self.load_words()
 
     def get_data(self, path):
         return os.path.join(self.root_dir, 'data', path)
@@ -51,7 +52,7 @@ class ProfanityChecker:
             self.trie.insert(word.lower())
 
     def compile_censor_pattern(self):
-        self.censor_pattern = re.compile(r'\b(?:\w+)\b', re.IGNORECASE)
+        self.censor_pattern = re.compile(r'[\w\u0980-\u09FF]+', re.UNICODE)
 
     def censor(self, input_text):
         words = input_text.split()
@@ -91,3 +92,17 @@ class ProfanityChecker:
 
         traverse(self.trie.root, "")
         return word_list
+
+    def add_word(self, word):
+        word = word.lower()
+        if not self.trie.search(word):
+            self.trie.insert(word)
+            self.update_wordlist_file(word)
+
+    def update_wordlist_file(self, word):
+        filename = self.get_data('wordlist.enc')
+        with open(filename, 'ab') as f:
+            fernet = Fernet(self.key)
+            encrypted_word = fernet.encrypt(word.encode() + b'\n')
+            f.write(encrypted_word)
+        f.close()
