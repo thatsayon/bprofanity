@@ -27,4 +27,7 @@ setup(
         '': ['bprofanity/data/wordlist.enc'],
     },
     include_package_data=True,
+    install_requires=[
+        'cryptography==42.0.5'
+    ]
 )
