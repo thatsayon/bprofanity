@@ -1,7 +1,7 @@
 
 # bprofanity
 
-![Static Badge](https://img.shields.io/badge/release-0.1-blue)
+![Static Badge](https://img.shields.io/badge/release-0.4-blue)
 
 A Python package for detecting and filtering profanity from bangla text.
 
@@ -19,10 +19,8 @@ pip install bprofanity
 
 ```python
 from bprofanity import ProfanityChecker
-import os
 
 profanity_checker = ProfanityChecker()
-profanity_checker.load_words()
 
 input_text = "Some text with a bad word like Bal"
 

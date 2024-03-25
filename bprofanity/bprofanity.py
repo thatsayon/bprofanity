@@ -54,19 +54,26 @@ class ProfanityChecker:
     def compile_censor_pattern(self):
         self.censor_pattern = re.compile(r'[\w\u0980-\u09FF]+', re.UNICODE)
 
+    def generate_word_combinations(self, words):
+        combinations = []
+        n = len(words)
+        for i in range(n):
+            for j in range(i + 1, n + 1):
+                combinations.append(' '.join(words[i:j]))
+        return combinations
+
     def censor(self, input_text):
         words = input_text.split()
-        censored_text = []
-        for word in words:
-            if self.trie.search(word.lower()):
-                censored_text.append('*' * len(word))
-            else:
-                censored_text.append(word)
-        return ' '.join(censored_text)
+        word_combinations = self.generate_word_combinations(words)
+        censored_text = input_text
+        for combination in word_combinations:
+            if self.contains_profanity(combination):
+                censored_text = censored_text.replace(
+                    combination, '*' * len(combination))
+        return censored_text
 
     def contains_profanity(self, input_text):
-        words = self.censor_pattern.findall(
-            input_text.lower())
+        words = self.censor_pattern.findall(input_text.lower())
         for word in words:
             if self.trie.search(word):
                 return True
@@ -74,8 +81,7 @@ class ProfanityChecker:
 
     def censor_count(self, input_text):
         count = 0
-        words = self.censor_pattern.findall(
-            input_text.lower())
+        words = self.censor_pattern.findall(input_text.lower())
         for word in words:
             if self.trie.search(word):
                 count += 1
