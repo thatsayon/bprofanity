@@ -1,7 +1,7 @@
 
 # bprofanity
 
-![Static Badge](https://img.shields.io/badge/release-0.4-blue)
+![Static Badge](https://img.shields.io/badge/release-0.5-blue)
 
 A Python package for detecting and filtering profanity from bangla text.
 
